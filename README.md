@@ -1,2 +1,2 @@
-# how-old-actor-movie
+# age-actor-movie
 How old was *Actor/Actress* when *Movie* premiered?

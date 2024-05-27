@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const results = document.getElementById('results');
     
     // Your TMDb API key
-    const apiKey = '749a1c6e8e89d81d30ec57b93025e397';
+    const apiKey = 'API-KEY';
 
     // Add an event listener to the form for the submit event
     form.addEventListener('submit', function(event) {

@@ -1,0 +1,6 @@
+Add TMDB to footer
+"confirm" movies e.g. "Avengers" and "The Avengers" are returning different ages.
+Add pictures for actors / actresses with Age overlayed
+Add a random example for homepage
+Search for Actor/Actress name and return all the movies they were in, and their age in that movie.
+Limit results to 10 with ability to list more.

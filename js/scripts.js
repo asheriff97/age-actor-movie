@@ -72,28 +72,57 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Function to calculate age given a birth date and a reference year
-    function calculateAge(birthDate, year) {
-        return year - birthDate.getFullYear(); // Calculate the difference in years
+    function calculateAge(birthDate, deathDate = null) {
+        const today = deathDate ? new Date(deathDate) : new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
+    }
+
+    function formatDeathDate(deathDate) {
+        const date = new Date(deathDate);
+        const options = { year: 'numeric', month: 'long' };
+        return date.toLocaleDateString(undefined, options);
     }
 
     function displayActors(cast, releaseYear) {
         cast.forEach(async (actor) => {
             const actorDetails = await getActorDetails(actor.id); // Fetch actor details
-            let actorAge;
+            let actorAgeAtRelease;
+            let actorCurrentStatus;
             if (actorDetails.birthday) {
-                actorAge = calculateAge(new Date(actorDetails.birthday), releaseYear);
+                actorAgeAtRelease = releaseYear - new Date(actorDetails.birthday).getFullYear(); // Calculate the actor's age at the time of the movie release
+                if (actorDetails.deathday) {
+                    const ageAtDeath = calculateAge(new Date(actorDetails.birthday), actorDetails.deathday);
+                    const formattedDeathDate = formatDeathDate(actorDetails.deathday);
+                    actorCurrentStatus = `Passed away at age ${ageAtDeath} (${formattedDeathDate})`; // Display age at death and formatted death date
+                } else {
+                    const actorCurrentAge = calculateAge(new Date(actorDetails.birthday)); // Calculate the actor's current age
+                    actorCurrentStatus = `Current Age: ${actorCurrentAge}`; // Display current age
+                }
             } else {
-                actorAge = 'Uknown';
+                actorAgeAtRelease = 'Unknown'; // Set age to 'Unknown' if birthdate is missing
+                actorCurrentStatus = 'Unknown'; // Set current status to 'Unknown' if birthdate is missing
             }
-            displayActor(actor.name, actorAge); // Display the actor's name and age
+            const profilePath = actorDetails.profile_path ? `https://image.tmdb.org/t/p/w200${actorDetails.profile_path}` : '../images/unknown.png'; // Use a placeholder if the profile path is missing
+            displayActor(actor.name, actor.character, profilePath, actorAgeAtRelease, actorCurrentStatus); // Display the actor's name, character, portrait, age at release, and current status
         });
     }
 
     // Function to display an actor's name and age
-    function displayActor(name, age) {
+    function displayActor(name, character, profilePath, ageAtRelease, currentStatus) {
         const actorDiv = document.createElement('div'); // Create a new div element
         actorDiv.classList.add('actor'); // Add the 'actor' class to the div
-        actorDiv.innerHTML = `<h3>${name}</h3><p>Age: ${age}</p>`; // Set the inner HTML of the div
+        actorDiv.innerHTML = `
+            <img src="${profilePath}" alt="${name}" class="actor-portrait">
+            <h3>${name}</h3>
+            <p>Character: ${character}</p>
+            <p>Age at Release: ${ageAtRelease}</p>
+            <p>${currentStatus}</p>
+        `; // Set the inner HTML of the div
         results.appendChild(actorDiv); // Append the div to the results container
     }
 });

@@ -33,4 +33,12 @@ main {
     padding: 1rem;
     margin: 1rem;
     display: inline-block;
+    text-align: left;
+    width: 200px;
+}
+
+.actor-portrait {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
 }
